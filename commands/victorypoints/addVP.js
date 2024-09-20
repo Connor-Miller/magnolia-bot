@@ -1,11 +1,11 @@
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
 const TrainerAPI = require('../../neo4j/trainerAPI');
 require('dotenv').config();
 
 
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName('addVP')
+        .setName('addvp')
         .setDescription('Add victory points to a trainer')
         .addUserOption(option => 
             option.setName('user')
@@ -35,7 +35,7 @@ module.exports = {
         const trainerAPI = new TrainerAPI(process.env.NEO4J_URI, process.env.NEO4J_USER, process.env.NEO4J_PASSWORD);
 
         try {
-            const vpTotal = await trainerAPI.updateVPTotal(mentionedUser.id, vpToAdd);
+            const vpTotal = await trainerAPI.updateVPTotal(mentionedUser.tag, vpToAdd);
 
             let replyMessage = `${mentionedUser.tag} has earned ${vpTotal} victory points!`;
             await interaction.reply(replyMessage);

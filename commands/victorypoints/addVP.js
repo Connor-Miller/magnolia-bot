@@ -37,9 +37,9 @@ module.exports = {
         try {
             const vpTotal = await trainerAPI.updateVPTotal(mentionedUser.tag, vpToAdd);
 
-            let replyMessage = `${mentionedUser.tag} has earned ${vpTotal} victory points!`;
+            let replyMessage = `<@${mentionedUser.id}> has earned ${vpTotal} victory points!`;
             await interaction.reply(replyMessage);
-        } catch (error) {
+        } catch (error) {   
             console.error('Error adding VP:', error);
             await interaction.reply('An error occurred while adding the VP. Please try again later.');
         } finally {

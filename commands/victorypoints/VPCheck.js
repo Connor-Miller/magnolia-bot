@@ -9,14 +9,8 @@ module.exports = {
         .setDescription('Check a trainer\'s victory points')
         .addUserOption(option => 
 
-
             option.setName('user')
-                .setDescription('The discord user to add victory points to')
-                .setRequired(true))
-        .addNumberOption(option =>
-
-            option.setName('vp')
-                .setDescription('The number of victory points to add')
+                .setDescription('The discord user to check the victory points of')
                 .setRequired(true)),
 
     async execute(interaction) {
@@ -27,27 +21,23 @@ module.exports = {
 
         try {
 
-            const trainer = await trainerAPI.getTrainerByDiscordId(mentionedUser.id);
+            const vpTotal = await trainerAPI.getVPTotal(mentionedUser.tag);
 
-            const badgeCount = trainer.length;
+            let replyMessage = `<@${mentionedUser.id}> has earned ${vpTotal} victory points!`;
 
-            const badgeTypes = [...new Set(badgeAwards.map(award => award.type))];
-
-            let replyMessage = `${mentionedUser.tag} has earned ${badgeCount} badge${badgeCount !== 1 ? 's' : ''}!`;
-
-            if (badgeCount > 0) {
-                replyMessage += ` They have the following badge types: ${badgeTypes.join(', ')}.`;
-            } else {
-                replyMessage += ` ...They haven't earned any badges yet.`;
+            if (vpTotal <= 0) {
+                replyMessage += ` ...I see... They're not very good at this game, are they?`;
             }
 
             await interaction.reply(replyMessage);
         } catch (error) {
-            console.error('Error adding badge:', error);
+            console.error('Error retrieving VP:', error);
 
-            await interaction.reply('An error occurred while adding the badge. Please try again later.');
+            await interaction.reply('An error occurred while retrieving the VP. Please try again later.');
+
         } finally {
-            await badgeAwardsAPI.close();
+            await trainerAPI.close();
         }
     },
+
 };

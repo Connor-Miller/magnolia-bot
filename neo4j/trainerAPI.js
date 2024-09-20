@@ -63,23 +63,28 @@ class TrainerAPI {
   }
 
   async updateVPTotal(discordId, vpToAdd) {
-
     const query = `
       MATCH (t:Trainer {discordId: $discordId})
-      SET t.vpTotal = t.vpTotal + $vpToAdd
+      SET t.vpTotal = coalesce(t.vpTotal, 0) + $vpToAdd
       RETURN t
     `;
 
-
     const params = {
-      discordId: String(discordId), 
+      discordId: discordId, // No need to convert to String if it's already a string
       vpToAdd: Number(vpToAdd),
     };
 
-
+    console.log('Updating VP for discordId:', discordId, 'Adding VP:', vpToAdd);
     const result = await this.neo4jHandler.executeQuery(query, params);
 
-    return result;
+    if (result.records.length === 0) {
+      console.log('No trainer found with discordId:', discordId);
+      return 0;
+    }
+
+    const updatedTrainer = result.records[0].get('t').properties;
+    console.log('Updated trainer:', updatedTrainer);
+    return updatedTrainer.vpTotal;
   }
 
   async getVPTotal(trainerId) {
@@ -94,13 +99,8 @@ class TrainerAPI {
 
     const result = await this.neo4jHandler.executeQuery(query, params);
     const vpTotal = result.records.map(record => record.get('t.vpTotal'));
-    return vpTotal;
+    return vpTotal ?? 0;
   }
-
-
-
-
-
 
   async close() {
     await this.neo4jHandler.close();

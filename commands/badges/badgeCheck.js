@@ -13,8 +13,6 @@ module.exports = {
 
     async execute(interaction) {
         const mentionedUser = interaction.options.getUser('user'); // Getting the user object
-        console.log(mentionedUser);
-        console.log(interaction.user);
         const badgeAwardsAPI = new BadgeAwardsAPI(process.env.NEO4J_URI, process.env.NEO4J_USER, process.env.NEO4J_PASSWORD);
 
         try {
@@ -24,7 +22,6 @@ module.exports = {
             const badgeTypes = badgeAwards.map(award => award.type).filter(Boolean);
 
             let replyMessage = `<@${mentionedUser.id}> has earned ${badgeCount} badge${badgeCount !== 1 ? 's' : ''}!`;
-            console.log(badgeAwards);
             if (badgeCount > 0) {
                 replyMessage += ` They have the following badge types: ${badgeTypes.join(', ')}.`;
 

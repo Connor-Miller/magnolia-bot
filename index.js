@@ -1,10 +1,7 @@
 const fs = require('node:fs');
 const path = require('node:path');
-const { Client, IntentsBitField, Collection, Events, GatewayIntentBits } = require('discord.js');
+const { Client, IntentsBitField, Collection, Events } = require('discord.js');
 const Neo4jHandler = require('./neo4j/neo4jHandler');
-const GamesAPI = require('./neo4j/gamesAPI');
-
-const { getRandomPhrase, chris_phrases, connor_phrases, mckay_phrases } = require('./misc/data');
 require('dotenv').config();
 
 const client = new Client({
@@ -43,39 +40,17 @@ client.once('ready', async () => {
 	await neo4jHandler.connect();
 });
 
-client.on('messageCreate', (message) => {
-  if(message.author.bot) {
-    return;
-  }
+// client.on('messageCreate', (message) => {
+//   if(message.author.bot) {
+//     return;
+//   }
 
-  if(message.content.toLowerCase().includes('pizza time')) {
-    message.reply('no');
-    return;
-  }
-  else {
-	  let val = Math.random();
-	  console.log(val)
-	  // Randomly decide whether to respond
-	  if (val <= 1 / 30) {
-        if(Math.random() < 1/10) {
-          message.reply('no');
-          return;
-        }
-		    if(message.author.username === 'daemon_lord_tmux_shell_hydra') {
-		      message.reply(getRandomPhrase(chris_phrases))
-		      return;
-		    }
-		    if(message.author.username === 'comtronic') {
-		      message.reply(getRandomPhrase(connor_phrases))
-		      return;
-		    }
-		    if(message.author.username === 'mckaybarton') {
-		      message.reply(getRandomPhrase(mckay_phrases));
-		      return;
-		    }
-	  }
-  }
-});
+//   if(message.content.toLowerCase().includes('pizza time')) {
+//     message.reply('no');
+//     return;
+//   }
+
+// });
 
 client.on(Events.InteractionCreate, async interaction => { // This is for handling slash commands
   if (!interaction.isChatInputCommand()) return;

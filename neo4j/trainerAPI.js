@@ -45,7 +45,7 @@ class TrainerAPI {
       discordId: String(trainer.discordId),
       discordMention: String(trainer.discordMention),
       serverName: String(trainer.serverName),
-      vpTotal: Number(trainer.vpTotal),
+      vpTotal: Number(trainer.vpTotal ?? 0),
     };
 
     await this.neo4jHandler.executeQuery(query, params, true);

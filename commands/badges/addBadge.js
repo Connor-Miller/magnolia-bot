@@ -44,20 +44,21 @@ module.exports = {
             location: location,
             timestamp: new Date(),
             awardedBy: {
-                discordId: interaction.user.id,  // The Discord ID of the user running the command
-                discordMention: interaction.user.tag,  // Their tag (e.g. Username#1234)
-                serverName: interaction.guild.name,  // Server name from the current interaction
+                discordId: interaction.user.tag,  // The Discord ID of the user running the command
+                discordMention: `<@${interaction.user.id}>`,  // Their tag (e.g. Username#1234)
+                serverName: interaction.globalName,  // Server name from the current interaction
+
             },
             awardedTo: {
-                discordId: mentionedUser.id,  // Mentioned user's Discord ID
-                discordMention: mentionedUser.tag,  // Mentioned user's tag (e.g. Username#1234)
-                serverName: '',  // Need to get the server name of the mentioned user
+                discordId: mentionedUser.tag,  // Mentioned user's Discord ID
+                discordMention: `<@${mentionedUser.id}>`,  // Mentioned user's tag (e.g. Username#1234)
+                serverName: mentionedUser.globalName,  // Need to get the server name of the mentioned user
             },
         };
 
         try {
             await badgeAwardsAPI.addBadgeAward(newBadgeAward);
-            await interaction.reply(`Congratulations ${mentionedUser.tag}! You have been awarded the ${badgeType} badge from ${location}!`);
+            await interaction.reply(`Congratulations <@${interaction.user.id}>! You have been awarded the ${badgeType} badge from ${location}!`);
         } catch (error) {
             console.error('Error adding badge:', error);
 

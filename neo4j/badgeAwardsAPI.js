@@ -44,7 +44,6 @@ class BadgeAwardsAPI {
       MERGE (badge:Badge {type: $badgeType})
       
       CREATE (b:BadgeAward {
-        id: $id,
         location: $location,
         timestamp: $timestamp
       })
@@ -57,7 +56,6 @@ class BadgeAwardsAPI {
     `;
 
     const params = {
-      id: String(badgeAward.id),
       location: String(badgeAward.location),
       timestamp: String(badgeAward.timestamp),
       awardedBy: badgeAward.awardedBy,
@@ -82,7 +80,8 @@ class BadgeAwardsAPI {
   async getBadgeAwardsByTrainer(trainerId) {
     const query = `
       MATCH (b:BadgeAward)-[:AWARDED_TO]->(t:Trainer {discordId: $trainerId})
-      RETURN b
+      MATCH (b)-[:IS_TYPE]->(badge:Badge)
+      RETURN b, badge.type AS type
     `;
 
     const params = {
@@ -90,7 +89,10 @@ class BadgeAwardsAPI {
     };
 
     const result = await this.neo4jHandler.executeQuery(query, params);
-    const badgeAwards = result.records.map(record => record.get('b').properties);
+    const badgeAwards = result.records.map(record => ({
+      ...record.get('b').properties,
+      type: record.get('type')
+    }));
     return badgeAwards;
   }
 

@@ -4,7 +4,7 @@ require('dotenv').config();
 
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName('addbadge')
+        .setName('badgecheck')
         .setDescription('Check a trainer for badges')
         .addUserOption(option => 
             option.setName('user')
@@ -13,21 +13,23 @@ module.exports = {
 
     async execute(interaction) {
         const mentionedUser = interaction.options.getUser('user'); // Getting the user object
-
+        console.log(mentionedUser);
+        console.log(interaction.user);
         const badgeAwardsAPI = new BadgeAwardsAPI(process.env.NEO4J_URI, process.env.NEO4J_USER, process.env.NEO4J_PASSWORD);
 
         try {
-            const badgeAwards = await badgeAwardsAPI.getBadgeAwardsByTrainer(mentionedUser.id);
+            const badgeAwards = await badgeAwardsAPI.getBadgeAwardsByTrainer(mentionedUser.tag);
 
             const badgeCount = badgeAwards.length;
-            const badgeTypes = [...new Set(badgeAwards.map(award => award.type))];
+            const badgeTypes = badgeAwards.map(award => award.type).filter(Boolean);
 
-            let replyMessage = `${mentionedUser.tag} has earned ${badgeCount} badge${badgeCount !== 1 ? 's' : ''}!`;
-
+            let replyMessage = `<@${mentionedUser.id}> has earned ${badgeCount} badge${badgeCount !== 1 ? 's' : ''}!`;
+            console.log(badgeAwards);
             if (badgeCount > 0) {
                 replyMessage += ` They have the following badge types: ${badgeTypes.join(', ')}.`;
+
             } else {
-                replyMessage += ` ...They haven't earned any badges yet.`;
+                replyMessage += ` ...Well, that's disappointing.`;
             }
 
             await interaction.reply(replyMessage);

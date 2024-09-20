@@ -14,9 +14,20 @@ module.exports = {
         .addNumberOption(option =>
             option.setName('vp')
                 .setDescription('The number of victory points to add')
-                .setRequired(true)),
+                .setRequired(true))
+        .setDefaultMemberPermissions(PermissionFlagsBits.ManageRoles),
+
 
     async execute(interaction) {
+        // Check if the user has the 'moderator' or 'organizer' role
+        const member = await interaction.guild.members.fetch(interaction.user.id);
+        const hasRequiredRole = member.roles.cache.some(role => 
+            role.name.toLowerCase() === 'moderator' || role.name.toLowerCase() === 'organizer'
+        );
+
+        if (!hasRequiredRole) {
+            return interaction.reply({ content: 'You do not have permission to use this command.', ephemeral: true });
+        }
 
         const mentionedUser = interaction.options.getUser('user'); // Getting the user object
         const vpToAdd = interaction.options.getNumber('vp');

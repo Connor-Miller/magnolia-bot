@@ -31,14 +31,22 @@ module.exports = {
 
         const mentionedUser = interaction.options.getUser('user'); // Getting the user object
         const vpToAdd = interaction.options.getNumber('vp');
+        const trainer = {
+            discordId: mentionedUser.tag,  // Mentioned user's Discord ID
+            discordMention: `<@${mentionedUser.id}>`,  // Mentioned user's tag (e.g. Username#1234)
+            serverName: mentionedUser.globalName,  // Mentioned user's server name
+        }
+        console.log(trainer);
 
         const trainerAPI = new TrainerAPI(process.env.NEO4J_URI, process.env.NEO4J_USER, process.env.NEO4J_PASSWORD);
 
         try {
-            const vpTotal = await trainerAPI.updateVPTotal(mentionedUser.tag, vpToAdd);
+            const vpTotal = await trainerAPI.updateVPTotal(trainer, vpToAdd);
 
-            let replyMessage = `<@${mentionedUser.id}> has earned ${vpTotal} victory points!`;
+            let replyMessage = `<@${mentionedUser.id}> has earned ${vpToAdd} victory points! They now have ${vpTotal} victory points.`;
+
             await interaction.reply(replyMessage);
+
         } catch (error) {   
             console.error('Error adding VP:', error);
             await interaction.reply('An error occurred while adding the VP. Please try again later.');

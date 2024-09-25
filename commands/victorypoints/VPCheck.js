@@ -23,7 +23,7 @@ module.exports = {
 
             const vpTotal = await trainerAPI.getVPTotal(mentionedUser.tag);
 
-            let replyMessage = `<@${mentionedUser.id}> has a total of ${vpTotal ?? 0} victory points!`;
+            let replyMessage = `<@${mentionedUser.id}> has a total of ${(vpTotal > 0) ? vpTotal : 0} victory points!`;
 
             if (vpTotal <= 0) {
                 replyMessage += ` ...I see... They're not very good at this game, are they?`;

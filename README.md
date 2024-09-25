@@ -1,4 +1,4 @@
-# dubois-bot
+# magnolia-bot
  
 ## Table of Contents
 - [Introduction](#introduction)
@@ -9,7 +9,7 @@
 - [Updating Slash Commands on the Server](#updating-slash-commands-on-the-server)
 
 ## Introduction
-Dubois bot, also known as Uncle Ben, is the official bot for the Bois Night™ discord server (name prone to change).
+Magnolia bot is the official bot for the Utah County Pokemon TCG discord server (name prone to change).
 This should help answer any questions on installation and upkeep for dear Uncle Ben, bless his heart.
 
 ## Installation
